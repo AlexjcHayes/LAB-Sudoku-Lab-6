@@ -32,7 +32,27 @@ public class Sudoku extends LatinSquare implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Stack<Cell> stkUndo = new Stack<Cell>();
 	private Stack<Cell> stkRedo = new Stack<Cell>();
-
+	private int Mistakes=0;
+	
+	/**
+	 * This method increments the value of Mistakes by 1
+	 * 
+	 * 
+	 * returns: nothing
+	 * 
+	 */
+	public void addMistake() {
+		this.Mistakes+=1;
+	}
+	
+	/**
+	 * This method get the current value of Mistakes
+	 * 
+	 * @return int
+	 */
+	public int getMistake() {
+		return this.Mistakes;
+	}
 	/**
 	 * bUndo - Returns 'true' if there is an item to Undo
 	 * 
@@ -1073,6 +1093,9 @@ public class Sudoku extends LatinSquare implements Serializable {
 				iCnt++;
 		}
 		return iCnt;
+	}
+	public void Gameover() {
+		System.out.print("Game Over");
 	}
 
 }

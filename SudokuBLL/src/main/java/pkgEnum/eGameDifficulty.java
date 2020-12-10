@@ -10,6 +10,10 @@ public enum eGameDifficulty {
 
 	private static int MaxMistakes;
 	
+	public int getMaxMistakes() {
+		return this.MaxMistakes;
+	}
+	
 	private final Double dDifficulty;
 
 	private static final Map<Double, eGameDifficulty> lookup = new HashMap<Double, eGameDifficulty>();
@@ -41,7 +45,7 @@ public enum eGameDifficulty {
 	 */
 	public static eGameDifficulty get(String strName) {
 		for (eGameDifficulty eGD : eGameDifficulty.values()) {
-			System.out.println(eGD.name().toUpperCase()+" TEST");
+			System.out.println(eGD.name().toUpperCase());
 			if (eGD.name().toUpperCase().equals(strName.toUpperCase())) {
 				MaxMistakes= eGD.name().toUpperCase()=="HARD"? 3:eGD.name().toUpperCase()=="MEDIUM"? 4:5;
 				System.out.println(MaxMistakes);
@@ -69,6 +73,8 @@ public enum eGameDifficulty {
 			int iDifficultyValue = (int) pair.getKey();
 			if (iDifficulty > iDifficultyValue) {
 				eGD = enumDifficulty;
+				MaxMistakes= eGD.name().toUpperCase()=="HARD"? 3:eGD.name().toUpperCase()=="MEDIUM"? 4:5;
+				System.out.println(MaxMistakes+ "blah");
 			}
 		}
 		return eGD;

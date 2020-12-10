@@ -43,7 +43,7 @@ import pkgGame.Cell;
 import pkgGame.Sudoku;
 import pkgHelper.PuzzleViolation;
 
-public class SudokuController   {
+public class SudokuController {
 
 	private Game game;
 
@@ -73,30 +73,33 @@ public class SudokuController   {
 	}
 
 	/**
-	 * SetUndoRedo - Figure out how to set the button states.  If there's nothing
-	 * to Undo, make sure btnUndo is disabled.  If there's nothing to Redo, make
-	 * sure btnRedo is disabled.
+	 * SetUndoRedo - Figure out how to set the button states. If there's nothing to
+	 * Undo, make sure btnUndo is disabled. If there's nothing to Redo, make sure
+	 * btnRedo is disabled.
+	 * 
 	 * @version 1.6
-	 * @since Lab #6  
+	 * @since Lab #6
 	 */
 	private void SetUndoRedo() {
 		if (this.game != null) {
-			
+
 			btnUndo.setDisable(true);
-			
-			
-			//TODO: Set btnUndo.setDisable(bool) based on whether or not there's something to undo
-			//TODO: Set btnRedo.setDisable(bool) based on whether or not there's something to undo			
+
+			// TODO: Set btnUndo.setDisable(bool) based on whether or not there's something
+			// to undo
+			// TODO: Set btnRedo.setDisable(bool) based on whether or not there's something
+			// to undo
 		}
 	}
 
 	/**
-	 * PaintCell - Paint the cell in the puzzle using data from the incoming Cell instance
+	 * PaintCell - Paint the cell in the puzzle using data from the incoming Cell
+	 * instance
 	 * 
 	 * @version 1.6
-	 * @since Lab #6 
+	 * @since Lab #6
 	 * @param c - use the row and column to figure out which cell to paint, use the
-	 * value to see what value to set
+	 *          value to see what value to set
 	 */
 	private void PaintCell(Cell c) {
 		ImageView ivFind = null;
@@ -110,8 +113,7 @@ public class SudokuController   {
 			if (o instanceof SudokuCell) {
 				SudokuCell SC = (SudokuCell) o;
 
-				if ((SC.getCell().getiRow() == c.getiRow()) && (SC.getCell().getiCol() == c.getiCol()))
-				{
+				if ((SC.getCell().getiRow() == c.getiRow()) && (SC.getCell().getiCol() == c.getiCol())) {
 					SC.getCell().setiCellValue(iCurrentCellValue);
 					for (Object o2 : SC.getChildren()) {
 						if (o2 instanceof ImageView) {
@@ -119,23 +121,23 @@ public class SudokuController   {
 						}
 					}
 					if (ivFind != null) {
-						final ImageView  ivRemove = ivFind;
-					
-						ParallelTransition pt =  CreateUndoRedoTransition(ivFind,true);
+						final ImageView ivRemove = ivFind;
+
+						ParallelTransition pt = CreateUndoRedoTransition(ivFind, true);
 						pt.setOnFinished(new EventHandler<ActionEvent>() {
-					        @Override
-					        public void handle(ActionEvent event) {
-					        	SC.getChildren().remove(ivRemove);
-					        }
-					    });
+							@Override
+							public void handle(ActionEvent event) {
+								SC.getChildren().remove(ivRemove);
+							}
+						});
 						pt.play();
 					}
 
 					if (iCurrentCellValue > 0) {
 						final ImageView iv = new ImageView(GetImage(iCurrentCellValue));
-						SC.getChildren().add(iv);	
-						
-						ParallelTransition pt =  CreateUndoRedoTransition(iv,false);
+						SC.getChildren().add(iv);
+
+						ParallelTransition pt = CreateUndoRedoTransition(iv, false);
 						pt.play();
 					}
 				}
@@ -146,38 +148,39 @@ public class SudokuController   {
 
 	/**
 	 * btnRedo_Click - Handle the 'Undo' action
+	 * 
 	 * @version 1.6
-	 * @since Lab #6 
+	 * @since Lab #6
 	 * @param event
-	 */	
-	
+	 */
+
 	@FXML
 	private void btnUndo_Click(ActionEvent event) {
 		Cell c = null;
-		//TODO: Undo the last move
+		// TODO: Undo the last move
 
-		c.setiCellValue(0);		
-		//	You'll have to 'PaintCell' based on the Cell returned in the mathod above
+		c.setiCellValue(0);
+		// You'll have to 'PaintCell' based on the Cell returned in the mathod above
 		PaintCell(c);
 	}
-	
+
 	/**
 	 * btnRedo_Click - Handle the 'Redo' action
+	 * 
 	 * @version 1.6
-	 * @since Lab #6 
+	 * @since Lab #6
 	 * @param event
 	 */
 	@FXML
 	private void btnRedo_Click(ActionEvent event) {
 		Cell c = null;
-		//TODO: Redo the last Undo move
+		// TODO: Redo the last Undo move
 		PaintCell(c);
-	}	
-	
-	
+	}
+
 	/**
-	 * CreateUndoRedoTransition - This method will craft a parallel transition
-	 * 	based on given ImageView and whether or not it's fading in or out. 
+	 * CreateUndoRedoTransition - This method will craft a parallel transition based
+	 * on given ImageView and whether or not it's fading in or out.
 	 * 
 	 * @version 1.6
 	 * @since Lab #6
@@ -185,26 +188,24 @@ public class SudokuController   {
 	 * @param bFade
 	 * @return
 	 */
-	private ParallelTransition CreateUndoRedoTransition(ImageView iv, boolean bFade)
-	{
-	    ParallelTransition pt = new ParallelTransition();	    
+	private ParallelTransition CreateUndoRedoTransition(ImageView iv, boolean bFade) {
+		ParallelTransition pt = new ParallelTransition();
 		ScaleTransition st = new ScaleTransition(Duration.millis(1000), iv);
-		st.setFromX(bFade ?  1f: .01f);
+		st.setFromX(bFade ? 1f : .01f);
 		st.setFromY(bFade ? 1f : .01f);
 		st.setToX(bFade ? .01f : 1f);
 		st.setToY(bFade ? .01f : 1f);
 
-		
 		RotateTransition rt = new RotateTransition(Duration.millis(250), iv);
 		rt.setByAngle(360f);
 		rt.setCycleCount(4);
-		
-	    FadeTransition ft = new FadeTransition(Duration.millis(1000), iv);	    
-	    ft.setFromValue(bFade ? 1.0: 0.0);
-	    ft.setToValue(bFade ? 0.0: 1.0);
-	    
-		pt.getChildren().addAll(st, rt, ft);			   
-	    return pt;
+
+		FadeTransition ft = new FadeTransition(Duration.millis(1000), iv);
+		ft.setFromValue(bFade ? 1.0 : 0.0);
+		ft.setToValue(bFade ? 0.0 : 1.0);
+
+		pt.getChildren().addAll(st, rt, ft);
+		return pt;
 	}
 
 	/**
@@ -409,11 +410,12 @@ public class SudokuController   {
 							Dragboard db = event.getDragboard();
 							Cell CellFrom = (Cell) db.getContent(myFormat);
 							Cell CellTo = (Cell) paneTarget.getCell();
-							
-							//if (s.isValidValue(CellTo.getiRow(), CellTo.getiCol(), CellFrom.getiCellValue()))
-							//{
-								event.acceptTransferModes(TransferMode.COPY_OR_MOVE);	
-							//}							
+
+							// if (s.isValidValue(CellTo.getiRow(), CellTo.getiCol(),
+							// CellFrom.getiCellValue()))
+							// {
+							event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+							// }
 						}
 						event.consume();
 					}
@@ -432,7 +434,7 @@ public class SudokuController   {
 									if (game.getShowHints()) {
 										ShowErrors(CellFrom, CellTo);
 
-										//paneTarget.getChildren().add(0, SudokuStyler.getRedPane());
+										// paneTarget.getChildren().add(0, SudokuStyler.getRedPane());
 									}
 								}
 							}
@@ -453,6 +455,7 @@ public class SudokuController   {
 					public void handle(DragEvent event) {
 						Dragboard db = event.getDragboard();
 						boolean success = false;
+
 						Cell CellTo = (Cell) paneTarget.getCell();
 
 						// TODO: This is where you'll find mistakes.
@@ -469,21 +472,31 @@ public class SudokuController   {
 							SetUndoRedo();
 							if (!s.isValidValue(CellTo.getiRow(), CellTo.getiCol(), CellFrom.getiCellValue())) {
 								if (game.getShowHints()) {
-									// If you're here, there's a mistake
+									System.out.print(s.getMistake());
+									s.addMistake();
+									int tempMistake = s.getMistake();
+									if (tempMistake == eGD.getMaxMistakes()) { // checks to see if the number of
+																				// mistakes are equal to the number of
+																				// max mistakes
+										s.Gameover();
+									}
+
 								}
+							} else {
+
+								// This is the code that is actually taking the cell value from the drag-from
+								// cell and dropping a new Image into the dragged-to cell
+								ImageView iv = new ImageView(GetImage(CellFrom.getiCellValue()));
+								paneTarget.getCell().setiCellValue(CellFrom.getiCellValue());
+								paneTarget.getChildren().clear();
+								paneTarget.getChildren().add(iv);
+
+								game.getSudoku().getPuzzle()[CellTo.getiRow()][CellTo.getiCol()] = CellFrom
+										.getiCellValue();
+
+								System.out.println(CellFrom.getiCellValue() + " bhalsdga");
+								success = true;
 							}
-
-							// This is the code that is actually taking the cell value from the drag-from
-							// cell and dropping a new Image into the dragged-to cell
-							ImageView iv = new ImageView(GetImage(CellFrom.getiCellValue()));
-							paneTarget.getCell().setiCellValue(CellFrom.getiCellValue());
-							paneTarget.getChildren().clear();
-							paneTarget.getChildren().add(iv);
-
-							game.getSudoku().getPuzzle()[CellTo.getiRow()][CellTo.getiCol()] = CellFrom.getiCellValue();
-
-							System.out.println(CellFrom.getiCellValue());
-							success = true;
 						}
 						event.setDropCompleted(success);
 						event.consume();
@@ -501,7 +514,7 @@ public class SudokuController   {
 		GridPane gp = (GridPane) hboxGrid.getChildren().get(0);
 		ObservableList<Node> childs = gp.getChildren();
 		Stack<Pane> stkPanes = new Stack<Pane>();
-		
+
 		for (Object o : childs) {
 
 			if (o instanceof SudokuCell) {
