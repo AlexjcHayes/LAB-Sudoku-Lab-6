@@ -8,6 +8,8 @@ public enum eGameDifficulty {
 
 	EASY(0.10), MEDIUM(0.25), HARD(0.50);
 
+	private static int MaxMistakes;
+	
 	private final Double dDifficulty;
 
 	private static final Map<Double, eGameDifficulty> lookup = new HashMap<Double, eGameDifficulty>();
@@ -39,8 +41,10 @@ public enum eGameDifficulty {
 	 */
 	public static eGameDifficulty get(String strName) {
 		for (eGameDifficulty eGD : eGameDifficulty.values()) {
-			System.out.println(eGD.name().toUpperCase());
+			System.out.println(eGD.name().toUpperCase()+" TEST");
 			if (eGD.name().toUpperCase().equals(strName.toUpperCase())) {
+				MaxMistakes= eGD.name().toUpperCase()=="HARD"? 3:eGD.name().toUpperCase()=="MEDIUM"? 4:5;
+				System.out.println(MaxMistakes);
 				return eGD;
 			}
 		}
