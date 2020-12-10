@@ -32,8 +32,15 @@ public class Sudoku extends LatinSquare implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Stack<Cell> stkUndo = new Stack<Cell>();
 	private Stack<Cell> stkRedo = new Stack<Cell>();
+	private Stack<Integer> tempCellValue= new Stack<Integer>();
 	private int Mistakes=0;
 	
+	public Stack getStkUndo() {
+		return this.stkUndo;
+	}
+	public Stack getStkRedo() {
+		return this.stkRedo;
+	}
 	/**
 	 * This method increments the value of Mistakes by 1
 	 * 
@@ -88,6 +95,11 @@ public class Sudoku extends LatinSquare implements Serializable {
 	public void MakeMove(Cell c) {
 		//TODO: Push the 'c' to the Undo Stack
 		//TODO: Clear the Redo Stack
+		this.stkUndo.push(c);
+		this.tempCellValue.clear();
+		this.stkRedo.clear();
+
+		
 	}
 	
 
@@ -109,6 +121,10 @@ public class Sudoku extends LatinSquare implements Serializable {
 		// Push the value to the 'Redo' stack
 		// Return the Cell that you popped from the Undo Stack
 		
+		c=this.stkUndo.pop();
+		this.tempCellValue.push((Integer)c.getiCellValue());
+		this.stkRedo.push(c);
+		this.getPuzzle()[c.getiRow()][c.getiCol()]=0;
 		return c;
 	}
 	/**
@@ -127,6 +143,10 @@ public class Sudoku extends LatinSquare implements Serializable {
 		//TODO: 'Redo' the previous move.
 		//	Pop the value from the Redo stack.  Set the value in the puzzle,
 		//	return it.
+		c=this.stkRedo.pop();
+		c.setiCellValue(this.tempCellValue.pop());
+		this.stkUndo.push(c);
+		this.getPuzzle()[c.getiRow()][c.getiCol()]=c.getiCellValue();
 		return c;
 	}
 
@@ -1073,7 +1093,6 @@ public class Sudoku extends LatinSquare implements Serializable {
 					Random rand = new SecureRandom();
 					int iRandomRow = rand.nextInt(rowMax - rowMin) + rowMin;
 					int iRandomCol = rand.nextInt(colMax - colMin) + colMin;
-
 					this.getPuzzle()[iRandomRow][iRandomCol] = 0;
 					int iZeroCnt = this.CountZero(r);
 					pctToRemove = this.eGameDifficulty.getdDifficulty();
@@ -1096,6 +1115,9 @@ public class Sudoku extends LatinSquare implements Serializable {
 	}
 	public void Gameover() {
 		System.out.print("Game Over");
+	}
+	public void GameWin() {
+		System.out.print("Congrats you win!!!!");
 	}
 
 }

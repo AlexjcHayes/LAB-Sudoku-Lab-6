@@ -83,12 +83,8 @@ public class SudokuController {
 	private void SetUndoRedo() {
 		if (this.game != null) {
 
-			btnUndo.setDisable(true);
-
-			// TODO: Set btnUndo.setDisable(bool) based on whether or not there's something
-			// to undo
-			// TODO: Set btnRedo.setDisable(bool) based on whether or not there's something
-			// to undo
+			btnUndo.setDisable(!s.bUndo());
+			btnRedo.setDisable(!s.bRedo());
 		}
 	}
 
@@ -158,8 +154,7 @@ public class SudokuController {
 	private void btnUndo_Click(ActionEvent event) {
 		Cell c = null;
 		// TODO: Undo the last move
-
-		c.setiCellValue(0);
+		c = s.Undo();
 		// You'll have to 'PaintCell' based on the Cell returned in the mathod above
 		PaintCell(c);
 	}
@@ -175,6 +170,7 @@ public class SudokuController {
 	private void btnRedo_Click(ActionEvent event) {
 		Cell c = null;
 		// TODO: Redo the last Undo move
+		c = s.Redo();
 		PaintCell(c);
 	}
 
@@ -468,38 +464,39 @@ public class SudokuController {
 						if (db.hasContent(myFormat)) {
 							Cell CellFrom = (Cell) db.getContent(myFormat);
 
-							s.MakeMove(CellTo);
-							SetUndoRedo();
-							if (!s.isValidValue(CellTo.getiRow(), CellTo.getiCol(), CellFrom.getiCellValue())) {
-								if (game.getShowHints()) {
-									System.out.print(s.getMistake());
-									s.addMistake();
-									int tempMistake = s.getMistake();
-									if (tempMistake == eGD.getMaxMistakes()) { // checks to see if the number of
-																				// mistakes are equal to the number of
-																				// max mistakes
-										s.Gameover();
+							if (CellTo.getiCellValue() == 0) {
+								if (!s.isValidValue(CellTo.getiRow(), CellTo.getiCol(), CellFrom.getiCellValue())) {
+									if (game.getShowHints()) {
+										s.addMistake();
+										System.out.print(s.getMistake());
+										int tempMistake = s.getMistake();
+										if (tempMistake == eGD.getMaxMistakes()) { 
+											s.Gameover();
+										}
+
 									}
+								} else {
+
+									// This is the code that is actually taking the cell value from the drag-from
+									// cell and dropping a new Image into the dragged-to cell
+									ImageView iv = new ImageView(GetImage(CellFrom.getiCellValue()));
+									paneTarget.getCell().setiCellValue(CellFrom.getiCellValue());
+									paneTarget.getChildren().clear();
+									paneTarget.getChildren().add(iv);
+									game.getSudoku().getPuzzle()[CellTo.getiRow()][CellTo.getiCol()] = CellFrom
+											.getiCellValue();
+									success = true;
+									s.MakeMove(CellTo);
 
 								}
-							} else {
-
-								// This is the code that is actually taking the cell value from the drag-from
-								// cell and dropping a new Image into the dragged-to cell
-								ImageView iv = new ImageView(GetImage(CellFrom.getiCellValue()));
-								paneTarget.getCell().setiCellValue(CellFrom.getiCellValue());
-								paneTarget.getChildren().clear();
-								paneTarget.getChildren().add(iv);
-
-								game.getSudoku().getPuzzle()[CellTo.getiRow()][CellTo.getiCol()] = CellFrom
-										.getiCellValue();
-
-								System.out.println(CellFrom.getiCellValue() + " bhalsdga");
-								success = true;
 							}
 						}
 						event.setDropCompleted(success);
 						event.consume();
+						SetUndoRedo();
+						if (s.CountZero() == 0) {
+							s.GameWin();
+						}
 					}
 				});
 
